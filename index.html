@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Buku Tamu · Eka & Meri</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{--k:#000;--p:#fff;--a:#F5F5F5;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--p);color:var(--k);font:300 15px/1.6 Inter,system-ui,sans-serif;overflow-x:hidden}
+h1,h2,.serif{font-family:"Cormorant Garamond",Georgia,serif;font-weight:400}
+.wrap{max-width:440px;margin:0 auto;padding:40px 24px}
+.scr{display:none;animation:f .8s ease both}.scr.on{display:block}
+@keyframes f{from{opacity:0}to{opacity:1}}
+.hero{min-height:88vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:18px}
+.sm{font-size:11px;letter-spacing:.35em;text-transform:uppercase}
+h1{font-size:64px;line-height:1;margin:0}h2{font-size:30px;margin:0 0 20px}
+button,.btn{background:var(--k);color:var(--p);border:1px solid var(--k);border-radius:2px;padding:14px 28px;font:400 12px Inter,sans-serif;letter-spacing:.3em;text-transform:uppercase;cursor:pointer;width:100%;display:block;text-align:center;text-decoration:none}
+button.o{background:var(--p);color:var(--k)}button:disabled{opacity:.3}
+.hero button{width:auto;margin-top:20px}
+label{display:block;font-size:11px;letter-spacing:.25em;text-transform:uppercase;margin:22px 0 8px}
+input,textarea,select{width:100%;border:1px solid var(--k);border-radius:2px;padding:12px;font:300 15px Inter,sans-serif;background:var(--p);color:var(--k)}
+textarea{min-height:130px;resize:none}
+.steps{display:flex;gap:6px;margin-bottom:28px}.steps i{flex:1;height:1px;background:#000;opacity:.2}.steps i.on{opacity:1;height:2px}
+.row{display:flex;gap:10px;margin-top:26px}
+.cam{position:relative;background:var(--a);border:1px solid var(--k);border-radius:2px;aspect-ratio:3/4;overflow:hidden}
+.cam video,.cam img{width:100%;height:100%;object-fit:cover;filter:grayscale(1);display:block}
+.cam video{transform:scaleX(-1)}
+#cd{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:400 120px "Cormorant Garamond",serif;color:#fff;mix-blend-mode:difference}
+.seg{display:flex;margin:14px 0}.seg button{border-radius:0;padding:10px;font-size:11px}
+.msg{font-size:13px;margin-top:12px;padding:10px;background:var(--a);border-radius:2px}
+.wall{border-top:1px solid var(--k);margin-top:48px;padding-top:32px}
+.w{border-bottom:1px solid #0002;padding:16px 0}.w b{font-weight:400;letter-spacing:.15em;font-size:12px;text-transform:uppercase}.w small{opacity:.5;margin-left:8px}.w p{margin:6px 0 0;font:400 18px "Cormorant Garamond",serif}
+details{margin-top:36px;font-size:13px;border:1px solid #0003;border-radius:2px;padding:12px}
+canvas{display:none}
+</style></head><body>
+<div class="wrap">
+<section id="s0" class="scr on"><div class="hero">
+<div class="sm">The Wedding Of</div><h1 class="serif">Eka &amp; Meri</h1>
+<div class="serif" style="font-size:22px" id="gr">23–24 Januari 2027</div>
+<button id="go">Masuk</button></div></section>
+
+<section id="sc" class="scr"><div class="hero"><h2>Buku tamu sudah ditutup.<br>Terima kasih.</h2></div></section>
+
+<section id="s1" class="scr">
+<div class="steps"><i class="on"></i><i></i><i></i></div>
+<h2>Data Tamu</h2>
+<label>Nama *</label><input id="nm" maxlength="80" autocomplete="name">
+<label>Hari hadir</label><select id="dy"><option>Kedua hari</option><option>23 Januari</option><option>24 Januari</option></select>
+<label>Jumlah tamu (opsional)</label><select id="gc"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+<div class="row"><button id="n1">Lanjut</button></div></section>
+
+<section id="s2" class="scr">
+<div class="steps"><i class="on"></i><i class="on"></i><i></i></div>
+<h2>Ucapan &amp; Doa</h2>
+<textarea id="ms" maxlength="300" placeholder="Tulis ucapan dan doa…"></textarea>
+<div class="sm" style="text-align:right;margin-top:6px"><span id="cc">0</span>/300</div>
+<div class="row"><button class="o" data-b="s1">Kembali</button><button id="n2" disabled>Lanjut</button></div></section>
+
+<section id="s3" class="scr">
+<div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i></div>
+<h2>Photobooth</h2>
+<div class="seg"><button id="m1">1 Foto</button><button id="m3" class="o">Strip 3</button></div>
+<div class="cam" id="cam"><video id="v" playsinline muted autoplay></video><div id="cd"></div></div>
+<div class="cam" id="pv" style="display:none;aspect-ratio:auto"><img id="pi" alt="Hasil foto"></div>
+<div id="cerr" class="msg" style="display:none">Kamera tidak tersedia. Unggah foto dari galeri sebagai gantinya.</div>
+<div class="row" id="rb"><button id="sh">Ambil Foto</button></div>
+<div class="row"><button class="o" id="up">Unggah Foto</button></div>
+<input type="file" id="fi" accept="image/*" hidden>
+<div class="row" id="rb2" style="display:none"><button class="o" id="rt">Ulangi</button><button id="sd">Kirim</button></div>
+<div class="row"><button class="o" data-b="s2">Kembali</button></div>
+<div class="msg" id="er" style="display:none"></div>
+<details><summary>Bantuan izin kamera</summary><p>iPhone (Safari): ketuk aA di bilah alamat › Pengaturan Situs Web › Kamera › Izinkan. Android (Chrome): ketuk ikon gembok › Izin › Kamera › Izinkan, lalu muat ulang halaman.</p></details>
+</section>
+
+<section id="s4" class="scr"><h2>Terima Kasih</h2>
+<p>Ucapan Anda sudah tersimpan. Sampai jumpa di hari bahagia kami.</p>
+<div class="cam" style="aspect-ratio:auto;border:0"><img id="ty" alt="Foto berbingkai" style="filter:none;height:auto"></div>
+<div class="row"><button id="dl">Unduh Foto</button></div>
+<div class="row"><button class="o" id="again">Tulis Ucapan Lagi</button></div></section>
+
+<div class="wall"><h2>Dinding Ucapan</h2><div id="wl"><p class="sm" style="opacity:.5">Belum ada ucapan.</p></div></div>
+</div>
+<canvas id="cv"></canvas>
+<script>
+const $=s=>document.querySelector(s),CAP="Eka & Meri · 23–24.01.2027";
+let S={mode:1,shots:[],final:null,small:null},db=null,stream=null;
+function show(id){document.querySelectorAll('.scr').forEach(e=>e.classList.toggle('on',e.id===id));scrollTo(0,0);if(id==='s3')startCam()}
+document.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>show(b.dataset.b));
+$('#go').onclick=()=>show('s1');
+$('#n1').onclick=()=>{if(!$('#nm').value.trim()){$('#nm').focus();return}show('s2')};
+$('#ms').oninput=e=>{$('#cc').textContent=e.target.value.length;$('#n2').disabled=!e.target.value.trim()};
+$('#n2').onclick=()=>show('s3');
+function setMode(m){S.mode=m;$('#m1').className=m==1?'':'o';$('#m3').className=m==3?'':'o'}
+$('#m1').onclick=()=>setMode(1);$('#m3').onclick=()=>setMode(3);
+async function startCam(){
+ $('#cerr').style.display='none';
+ try{if(stream)return;stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});$('#v').srcObject=stream;$('#sh').disabled=false}
+ catch(e){$('#cerr').style.display='block';$('#sh').disabled=true}}
+function crop(src,w,h,mirror){const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
+ const sw=src.videoWidth||src.naturalWidth,sh=src.videoHeight||src.naturalHeight,r=w/h;let cw=sw,ch=sw/r;if(ch>sh){ch=sh;cw=sh*r}
+ if(mirror){x.translate(w,0);x.scale(-1,1)}x.drawImage(src,(sw-cw)/2,(sh-ch)/2,cw,ch,0,0,w,h);
+ const d=x.getImageData(0,0,w,h),p=d.data;for(let i=0;i<p.length;i+=4){const g=.299*p[i]+.587*p[i+1]+.114*p[i+2];p[i]=p[i+1]=p[i+2]=g}x.putImageData(d,0,0);return c}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+async function count(){for(const n of[3,2,1]){$('#cd').textContent=n;await wait(1000)}$('#cd').textContent=''}
+function compose(shots){const m=shots.length,pad=24,pw=m==1?552:372,ph=m==1?736:279,gap=12,cap=64;
+ const W=pw+pad*2,H=pad+m*ph+(m-1)*gap+cap+pad/2,c=$('#cv');c.width=W;c.height=H;const x=c.getContext('2d');
+ x.fillStyle='#000';x.fillRect(0,0,W,H);shots.forEach((s,i)=>x.drawImage(s,pad,pad+i*(ph+gap)));
+ x.strokeStyle='#fff';x.lineWidth=1;x.strokeRect(pad-6,pad-6,pw+12,m*ph+(m-1)*gap+12);
+ x.fillStyle='#fff';x.textAlign='center';x.font='24px "Cormorant Garamond",Georgia,serif';x.fillText(CAP,W/2,H-pad-6);return c}
+function done(c){S.final=c.toDataURL('image/jpeg',.92);const k=Math.min(1,1200/Math.max(c.width,c.height)),t=document.createElement('canvas');t.width=c.width*k;t.height=c.height*k;t.getContext('2d').drawImage(c,0,0,t.width,t.height);S.small=t.toDataURL('image/jpeg',.8);
+ $('#pi').src=S.final;$('#cam').style.display='none';$('#pv').style.display='block';$('#rb').style.display='none';$('#rb2').style.display='flex'}
+$('#sh').onclick=async()=>{$('#sh').disabled=true;const m=S.mode,shots=[],pw=m==1?552:372,ph=m==1?736:279;
+ for(let i=0;i<m;i++){await count();shots.push(crop($('#v'),pw*2,ph*2,true));await wait(300)}
+ $('#sh').disabled=false;done(compose(shots))};
+$('#up').onclick=()=>$('#fi').click();
+$('#fi').onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image();im.onload=()=>{const m=S.mode,pw=m==1?552:372,ph=m==1?736:279,sh=[];for(let i=0;i<m;i++)sh.push(crop(im,pw*2,ph*2,false));done(compose(sh))};im.src=URL.createObjectURL(f)};
+$('#rt').onclick=()=>{S.final=null;$('#cam').style.display='block';$('#pv').style.display='none';$('#rb').style.display='flex';$('#rb2').style.display='none'};
+function rate(){try{const a=JSON.parse(localStorage.getItem('bt')||'[]').filter(t=>Date.now()-t<36e5);return a}catch(e){return[]}}
+$('#sd').onclick=async()=>{const er=$('#er');er.style.display='none';
+ if(rate().length>=3){er.textContent='Batas 3 kiriman per jam tercapai. Coba lagi nanti.';er.style.display='block';return}
+ $('#sd').disabled=true;$('#sd').textContent='Mengirim…';
+ try{const r=await fetch('/api/entries',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:$('#nm').value.trim(),day_attending:$('#dy').value,guest_count:$('#gc').value,message:$('#ms').value.trim(),photo:S.small})});
+  if(!r.ok){const j=await r.json().catch(()=>({}));throw j.error||'gagal'}}
+ catch(e){er.textContent=typeof e==='string'&&e!=='gagal'?e:'Pengiriman gagal. Periksa sinyal, lalu coba lagi.';er.style.display='block';$('#sd').disabled=false;$('#sd').textContent='Kirim';return}
+ try{const a=rate();a.push(Date.now());localStorage.setItem('bt',JSON.stringify(a))}catch(e){}
+ $('#ty').src=S.final;$('#sd').disabled=false;$('#sd').textContent='Kirim';show('s4')};
+$('#dl').onclick=()=>{const a=document.createElement('a');a.href=S.final;a.download='eka-meri-photobooth.jpg';a.click()};
+$('#again').onclick=()=>{$('#ms').value='';$('#cc').textContent=0;$('#n2').disabled=true;$('#rt').click();show('s2')};
+function ago(t){const m=Math.round((Date.now()-t)/6e4);return m<1?'baru saja':m<60?m+' menit lalu':m<1440?Math.round(m/60)+' jam lalu':Math.round(m/1440)+' hari lalu'}
+function wall(docs){const w=$('#wl');w.textContent='';if(!docs.length){w.innerHTML='<p class="sm" style="opacity:.5">Belum ada ucapan.</p>';return}
+ docs.forEach(d=>{if(d.hidden)return;const e=document.createElement('div');e.className='w';const b=document.createElement('b'),s=document.createElement('small'),p=document.createElement('p');b.textContent=d.name;s.textContent=ago(d.created_at);p.textContent=d.message;e.append(b,s,p);w.append(e)})}
+async function loadWall(){try{wall(await (await fetch('/api/wall')).json())}catch(e){}}
+(async()=>{try{const v=await (await fetch('/api/settings')).json();
+ if(v.closed){document.querySelectorAll('.scr').forEach(e=>e.classList.remove('on'));$('#sc').classList.add('on')}}catch(e){}
+ loadWall();setInterval(loadWall,15000)})();
+</script></body></html>

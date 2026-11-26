@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin · Eka & Meri</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fff;color:#000;font:300 14px/1.5 Inter,sans-serif}
+h1,h2,h3{font-family:"Cormorant Garamond",serif;font-weight:400;margin:0}h1{font-size:34px}
+.w{max-width:1000px;margin:0 auto;padding:28px 18px}
+button,.b{background:#000;color:#fff;border:1px solid #000;border-radius:2px;padding:9px 14px;font:400 11px Inter;letter-spacing:.22em;text-transform:uppercase;cursor:pointer}
+button.o{background:#fff;color:#000}button.s{padding:5px 8px;font-size:10px}
+input,select{border:1px solid #000;border-radius:2px;padding:9px;font:300 14px Inter;background:#fff}
+.st{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:20px 0}
+.st div{border:1px solid #000;border-radius:2px;padding:14px}.st b{display:block;font:400 34px "Cormorant Garamond",serif}.st span{font-size:10px;letter-spacing:.2em;text-transform:uppercase}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid #000;padding-bottom:12px;margin-bottom:18px}
+.tabs button{background:#fff;color:#000;border-color:#0003}.tabs button.on{background:#000;color:#fff;border-color:#000}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:720px}th,td{border-bottom:1px solid #0002;padding:8px;text-align:left;vertical-align:top}th{font:400 10px Inter;letter-spacing:.2em;text-transform:uppercase}
+img.t{width:46px;height:46px;object-fit:cover;filter:grayscale(1);cursor:pointer;border-radius:2px}
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px}.g img{width:100%;aspect-ratio:3/4;object-fit:cover;filter:grayscale(1);cursor:pointer}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.hide{display:none}
+#lb{position:fixed;inset:0;background:#000e;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:9}#lb img{max-width:92vw;max-height:80vh;filter:grayscale(1)}
+</style></head><body><div class="w">
+<div id="lg" style="max-width:340px;margin:12vh auto"><h1>Admin</h1><p>Eka &amp; Meri</p>
+<input id="em" type="email" placeholder="Email" style="width:100%;margin-bottom:8px"><input id="pw" type="password" placeholder="Kata sandi" style="width:100%;margin-bottom:12px">
+<button id="li" style="width:100%">Masuk</button><p id="le"></p></div>
+<div id="ap" class="hide"><div style="display:flex;justify-content:space-between;align-items:center"><h1>Dashboard</h1><button class="o" id="lo">Keluar</button></div>
+<div class="st" id="st"></div>
+<div class="tabs"><button data-t="tamu" class="on">Tamu</button><button data-t="galeri">Galeri</button><button data-t="qr">QR Code</button><button data-t="set">Pengaturan</button></div>
+<div id="tamu"><div class="bar"><input id="q" placeholder="Cari nama…"><select id="fd"><option value="">Semua hari</option><option>23 Januari</option><option>24 Januari</option><option>Kedua hari</option></select><button class="o" id="zip">Unduh semua foto (ZIP)</button><button class="o" id="csv">Ekspor data (CSV)</button></div>
+<div class="tw"><table><thead><tr><th>Foto</th><th>Nama</th><th>Hari</th><th>Tamu</th><th>Ucapan</th><th>Waktu</th><th></th></tr></thead><tbody id="tb"></tbody></table></div></div>
+<div id="galeri" class="hide"><div class="g" id="gg"></div></div>
+<div id="qr" class="hide"><div id="qc" style="display:inline-block;padding:16px;border:1px solid #000"></div><p id="ql"></p><button id="qd">Unduh PNG</button></div>
+<div id="set" class="hide"><p><label><input type="checkbox" id="op"> Buku tamu dibuka</label></p><p>Tutup otomatis pada:<br><input type="datetime-local" id="ca"></p><button id="ss">Simpan</button> <span id="sm"></span></div>
+</div></div>
+<div id="lb"><img id="li2"><div><a class="b" id="ld" download="foto.jpg" style="text-decoration:none">Unduh</a> <button class="o" onclick="lb.style.display='none'">Tutup</button></div></div>
+<script>
+const $=s=>document.querySelector(s),lb=$('#lb');let D=[],U={},T=sessionStorage.getItem('t'),ST={};
+const fmt=t=>new Date(t).toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'});
+const H=()=>({'content-type':'application/json',authorization:'Bearer '+T});
+async function api(p,o={}){const r=await fetch('/api/'+p,{...o,headers:H()});if(r.status===401){sessionStorage.removeItem('t');T=null;boot()}return r}
+function boot(){$('#lg').classList.toggle('hide',!!T);$('#ap').classList.toggle('hide',!T);if(T)load()}
+$('#li').onclick=async()=>{const r=await fetch('/api/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:$('#em').value,password:$('#pw').value})});
+ if(!r.ok)$('#le').textContent='Email atau kata sandi salah.';else{T=(await r.json()).token;sessionStorage.setItem('t',T);boot()}};
+$('#lo').onclick=()=>{sessionStorage.removeItem('t');T=null;boot()};
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));['tamu','galeri','qr','set'].forEach(t=>$('#'+t).classList.toggle('hide',t!==b.dataset.t))});
+async function load(){const r=await api('admin/entries');if(!r.ok)return;D=await r.json();
+ await Promise.all(D.filter(d=>d.photo&&!U[d.id]).map(async d=>{const x=await fetch('/api/admin/photo/'+d.id,{headers:H()});if(x.ok)U[d.id]=URL.createObjectURL(await x.blob())}));
+ const n=f=>D.filter(f).length,sum=D.reduce((a,d)=>a+(d.guest_count||1),0);
+ $('#st').innerHTML=[['Total tamu',sum],['Hadir 23 Jan',n(d=>d.day_attending!='24 Januari')],['Hadir 24 Jan',n(d=>d.day_attending!='23 Januari')],['Foto',n(d=>d.photo)],['Ucapan',D.length]].map(x=>`<div><b>${x[1]}</b><span>${x[0]}</span></div>`).join('');
+ draw();$('#gg').textContent='';D.filter(d=>U[d.id]).forEach(d=>{const i=new Image();i.src=U[d.id];i.onclick=()=>big(d);$('#gg').append(i)})}
+function big(d){$('#li2').src=U[d.id];$('#ld').href=U[d.id];$('#ld').download=d.name+'.jpg';lb.style.display='flex'}
+function draw(){const q=$('#q').value.toLowerCase(),f=$('#fd').value,tb=$('#tb');tb.textContent='';
+ D.filter(d=>d.name.toLowerCase().includes(q)&&(!f||d.day_attending===f)).forEach(d=>{const tr=document.createElement('tr');
+  const c=()=>document.createElement('td'),t=[c(),c(),c(),c(),c(),c(),c()];
+  if(U[d.id]){const i=new Image();i.className='t';i.src=U[d.id];i.onclick=()=>big(d);t[0].append(i)}
+  t[1].textContent=d.name;t[2].textContent=d.day_attending;t[3].textContent=d.guest_count||'-';t[4].textContent=d.message;t[5].textContent=fmt(d.created_at);
+  const h=document.createElement('button');h.className='o s';h.textContent=d.hidden?'Tampilkan':'Sembunyikan';h.onclick=async()=>{await api('admin/entries/'+d.id,{method:'PATCH',body:JSON.stringify({hidden:!d.hidden})});load()};
+  const x=document.createElement('button');x.className='s';x.textContent='Hapus';x.onclick=async()=>{if(!confirm('Hapus ucapan dari '+d.name+'?'))return;await api('admin/entries/'+d.id,{method:'DELETE'});load()};
+  t[6].append(h,' ',x);t.forEach(e=>tr.append(e));tb.append(tr)})}
+$('#q').oninput=draw;$('#fd').onchange=draw;
+function save(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click()}
+$('#csv').onclick=()=>{const e=v=>'"'+String(v??'').replace(/"/g,'""')+'"',iso=t=>t?new Date(t).toISOString():'';save(new Blob(['\ufeff'+[['Nama','Hari','Jumlah','Ucapan','Waktu','Check-in','Check-out'].join(',')].concat(D.map(d=>[d.name,d.day_attending,d.guest_count,d.message,iso(d.created_at),iso(d.checked_in_at),iso(d.checked_out_at)].map(e).join(','))).join('\n')],{type:'text/csv'}),'tamu.csv')};
+$('#zip').onclick=async()=>{$('#zip').textContent='Memproses…';const z=new JSZip();for(const d of D){if(!U[d.id])continue;z.file(d.name.replace(/[^\w]+/g,'_')+'_'+d.id.slice(0,4)+'.jpg',await (await fetch(U[d.id])).blob())}save(await z.generateAsync({type:'blob'}),'foto-tamu.zip');$('#zip').textContent='Unduh semua foto (ZIP)'};
+const url=location.origin+'/';$('#ql').textContent=url;new QRCode($('#qc'),{text:url,width:280,height:280,colorDark:'#000',colorLight:'#fff'});
+$('#qd').onclick=()=>{$('#qc canvas').toBlob(b=>save(b,'qr-buku-tamu.png'))};
+(async()=>{const v=await (await fetch('/api/settings')).json();$('#op').checked=v.is_open;if(v.close_at)$('#ca').value=new Date(v.close_at-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,16)})();
+$('#ss').onclick=async()=>{const r=await api('admin/settings',{method:'PUT',body:JSON.stringify({is_open:$('#op').checked,close_at:$('#ca').value?new Date($('#ca').value).getTime():null})});$('#sm').textContent=r.ok?'Tersimpan.':'Gagal menyimpan.'};
+boot();
+</script></body></html>
